@@ -13,7 +13,7 @@ const rl = readline.createInterface({
 
 async function main(){
  const searchKeyword = await askQuestion('Enter the searchKeyword: ');
- const country = await askQuestion('Enter the country code (e.g., US, IN): ');
+ const country = await askQuestion('Enter the country code: ');
  const userQuery = await askQuestion('Enter your query: ');
 
   try {
