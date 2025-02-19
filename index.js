@@ -1,5 +1,5 @@
 import readline from 'readline';
-import querySERPapi from './querySERPapi.js';
+import dataForSeoLabsApi from './dataForSeoLabsApi.js';
 import queryLLMaapi from './queryLLMapi.js';
 
 const rl = readline.createInterface({
@@ -12,12 +12,12 @@ const rl = readline.createInterface({
   }
 
 async function main(){
- const searchKeyword = await askQuestion('Enter the searchKeyword: ');
+ const domain = await askQuestion('Enter the domain: ');
  const country = await askQuestion('Enter the country code: ');
  const userQuery = await askQuestion('Enter your query: ');
 
   try {
-    const serpData = await querySERPapi(searchKeyword, country);
+    const serpData = await dataForSeoLabsApi(domain, country);
     const res = await queryLLMaapi(serpData, userQuery);
     
     console.log('Answer:', res);
