@@ -1,27 +1,45 @@
-import { OpenAI } from 'openai';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 async function queryLLMWithData(data, query) {
-  const prompt = `
-    Here is the search result data from Google for a domain and country:
-    ${JSON.stringify(data)}
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-    Answer the following question based on the above data:
-    ${query}
-  `;
+    const prompt = `
+        Here is the search result data from Google for a domain and country:
+        ${JSON.stringify(data)}
 
-  const completion = await openai.chat.completions.create({
-    model: 'gpt-3.5-turbo',
-    messages: [{ role: 'user', content: prompt }],
-  });
+        Answer the following question based on the above data:
+        ${query}
+    `;
 
-  return completion.choices[0].message.content;
+    const requestBody = {
+        contents: [{
+            parts: [{ text: prompt }]
+        }]
+    };
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
+    } catch (error) {
+        console.error("Error calling Gemini API:", error);
+        return null;
+    }
 }
 
 export default queryLLMWithData;

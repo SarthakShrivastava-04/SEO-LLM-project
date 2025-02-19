@@ -12,12 +12,12 @@ const rl = readline.createInterface({
   }
 
 async function main(){
- const domain = await askQuestion('Enter the domain: ');
+ const searchKeyword = await askQuestion('Enter the searchKeyword: ');
  const country = await askQuestion('Enter the country code (e.g., US, IN): ');
  const userQuery = await askQuestion('Enter your query: ');
 
   try {
-    const serpData = await querySERPapi(domain, country);
+    const serpData = await querySERPapi(searchKeyword, country);
     const res = await queryLLMaapi(serpData, userQuery);
     
     console.log('Answer:', res);
